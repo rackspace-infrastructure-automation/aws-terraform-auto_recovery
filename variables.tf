@@ -1,4 +1,4 @@
-variable "instance_id" {
-  type        = "string"
-  description = "The EC2 Instance ID to attach the auto recovery alarms to"
+variable "instances" {
+  type        = "list"
+  description = "The EC2 Instance IDs to attach the auto recovery alarms to"
 }
