@@ -23,6 +23,26 @@ resource "aws_cloudwatch_metric_alarm" "status_check_failed_instance_alarm_reboo
   alarm_actions = ["arn:aws:swf:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:action/actions/AWS_EC2.InstanceId/Reboot/1.0"]
 }
 
+resource "aws_cloudwatch_metric_alarm" "status_check_failed_instance_alarm_ticket" {
+  alarm_name          = "${var.instance}-StatusCheckFailedInstanceAlarmTicket"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = "10"
+  metric_name         = "StatusCheckFailed_Instance"
+  namespace           = "AWS/EC2"
+  period              = "60"
+  statistic           = "Minimum"
+  threshold           = "0"
+  unit                = "Count"
+  alarm_description   = "Status checks have failed, generating ticket"
+
+  dimensions {
+    InstanceId = "${var.instance}"
+  }
+
+  alarm_actions = ["arn:aws:sns:{data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rackspace-support-emergency"]
+  ok_actions    = ["arn:aws:sns:{data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rackspace-support-emergency"]
+}
+
 resource "aws_cloudwatch_metric_alarm" "status_check_failed_system_alarm_recover" {
   alarm_name          = "${var.instance}-StatusCheckFailedSystemAlarmRecover"
   comparison_operator = "GreaterThanThreshold"
@@ -40,4 +60,24 @@ resource "aws_cloudwatch_metric_alarm" "status_check_failed_system_alarm_recover
   }
 
   alarm_actions = ["arn:aws:automate:${data.aws_region.current.name}:ec2:recover"]
+}
+
+resource "aws_cloudwatch_metric_alarm" "status_check_failed_system_alarm_ticket" {
+  alarm_name          = "${var.instance}-StatusCheckFailedSystemAlarmTicket"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = "5"
+  metric_name         = "StatusCheckFailed_System"
+  namespace           = "AWS/EC2"
+  period              = "60"
+  statistic           = "Minimum"
+  threshold           = "0"
+  unit                = "Count"
+  alarm_description   = "Status checks have failed for system, generating ticket"
+
+  dimensions {
+    InstanceId = "${var.instance}"
+  }
+
+  alarm_actions = ["arn:aws:sns:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rackspace-support-emergency"]
+  ok_actions    = ["arn:aws:sns:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rackspace-support-emergency"]
 }
