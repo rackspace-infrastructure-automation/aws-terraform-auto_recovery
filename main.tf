@@ -1,8 +1,6 @@
 data "aws_caller_identity" "current" {}
 
-data "aws_region" "current" {
-  current = true
-}
+data "aws_region" "current" {}
 
 resource "aws_cloudwatch_metric_alarm" "status_check_failed_instance_alarm_reboot" {
   count               = "${length(var.instances)}"
