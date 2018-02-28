@@ -3,7 +3,7 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 resource "aws_cloudwatch_metric_alarm" "status_check_failed_instance_alarm_reboot" {
-  alarm_name          = "${var.name_tag} - StatusCheckFailedInstanceAlarmReboot - ${var.name_tag}"
+  alarm_name          = "${var.name_tag} - StatusCheckFailedInstanceAlarmReboot"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "5"
   metric_name         = "StatusCheckFailed_Instance"
