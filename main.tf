@@ -1,11 +1,9 @@
 data "aws_caller_identity" "current" {}
 
-data "aws_region" "current" {
-  current = true
-}
+data "aws_region" "current" {}
 
 resource "aws_cloudwatch_metric_alarm" "status_check_failed_instance_alarm_reboot" {
-  alarm_name          = "${var.instance}-StatusCheckFailedInstanceAlarmReboot"
+  alarm_name          = "${var.name_tag} - StatusCheckFailedInstanceAlarmReboot - ${var.name_tag}"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "5"
   metric_name         = "StatusCheckFailed_Instance"
@@ -24,7 +22,7 @@ resource "aws_cloudwatch_metric_alarm" "status_check_failed_instance_alarm_reboo
 }
 
 resource "aws_cloudwatch_metric_alarm" "status_check_failed_system_alarm_recover" {
-  alarm_name          = "${var.instance}-StatusCheckFailedSystemAlarmRecover"
+  alarm_name          = "${var.name_tag} - StatusCheckFailedSystemAlarmRecover"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "2"
   metric_name         = "StatusCheckFailed_System"
