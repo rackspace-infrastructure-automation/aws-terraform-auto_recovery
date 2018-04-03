@@ -30,8 +30,18 @@ data "aws_instances" "auto_recovery_instances" {
   }
 }
 
+data "aws_instance" "auto_recovery_instance" {
+  count = "${length(data.aws.auto_recovery_instances.ids)}"
+
+  instance_id = "${data.aws.auto_recovery_instances.ids[count.index]}"
+}
+
 resource "aws_cloudwatch_metric_alarm" "status_check_failed_instance_alarm_reboot" {
-  alarm_name          = "${var.name_tag} - StatusCheckFailedInstanceAlarmReboot"
+  count = "${length(data.aws.auto_recovery_instance.*.id)}"
+
+  alarm_actions       = ["arn:aws:swf:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:action/actions/AWS_EC2.InstanceId/Reboot/1.0"]
+  alarm_description   = "Status checks have failed, rebooting system"
+  alarm_name          = "${data.aws.auto_recovery_instance.*.tags.Name[count.index]} - StatusCheckFailedInstanceAlarmReboot"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "5"
   metric_name         = "StatusCheckFailed_Instance"
@@ -40,17 +50,18 @@ resource "aws_cloudwatch_metric_alarm" "status_check_failed_instance_alarm_reboo
   statistic           = "Minimum"
   threshold           = "0"
   unit                = "Count"
-  alarm_description   = "Status checks have failed, rebooting system"
 
   dimensions {
-    InstanceId = "${var.instance}"
+    InstanceId = "${data.aws.auto_recovery_instance.*.id[count.index]}"
   }
-
-  alarm_actions = ["arn:aws:swf:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:action/actions/AWS_EC2.InstanceId/Reboot/1.0"]
 }
 
 resource "aws_cloudwatch_metric_alarm" "status_check_failed_system_alarm_recover" {
-  alarm_name          = "${var.name_tag} - StatusCheckFailedSystemAlarmRecover"
+  count = "${length(data.aws.auto_recovery_instance.*.id)}"
+
+  alarm_actions       = ["arn:aws:automate:${data.aws_region.current.name}:ec2:recover"]
+  alarm_description   = "Status checks have failed for system, recovering instance"
+  alarm_name          = "${data.aws.auto_recovery_instance.*.tags.Name[count.index]} - StatusCheckFailedSystemAlarmRecover"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "2"
   metric_name         = "StatusCheckFailed_System"
@@ -59,11 +70,8 @@ resource "aws_cloudwatch_metric_alarm" "status_check_failed_system_alarm_recover
   statistic           = "Minimum"
   threshold           = "0"
   unit                = "Count"
-  alarm_description   = "Status checks have failed for system, recovering instance"
 
   dimensions {
-    InstanceId = "${var.instance}"
+    InstanceId = "${data.aws.auto_recovery_instance.*.id[count.index]}"
   }
-
-  alarm_actions = ["arn:aws:automate:${data.aws_region.current.name}:ec2:recover"]
 }
