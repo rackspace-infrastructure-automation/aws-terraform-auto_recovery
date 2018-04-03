@@ -2,6 +2,34 @@ data "aws_caller_identity" "current" {}
 
 data "aws_region" "current" {}
 
+data "aws_instances" "auto_recovery_instances" {
+  filter {
+    name = "instance-type"
+
+    values = [
+      "c3.*",
+      "c4.*",
+      "c5.*",
+      "m3.*",
+      "m4.*",
+      "m5.*",
+      "r3.*",
+      "r4.*",
+      "t2.*",
+      "x1.*",
+    ]
+  }
+
+  filter {
+    name   = "instance-id"
+    values = ["${var.instance_ids}"]
+  }
+
+  instance_tags {
+    RsAutoRecovery = "True"
+  }
+}
+
 resource "aws_cloudwatch_metric_alarm" "status_check_failed_instance_alarm_reboot" {
   alarm_name          = "${var.name_tag} - StatusCheckFailedInstanceAlarmReboot"
   comparison_operator = "GreaterThanThreshold"
