@@ -31,17 +31,17 @@ data "aws_instances" "auto_recovery_instances" {
 }
 
 data "aws_instance" "auto_recovery_instance" {
-  count = "${length(data.aws.auto_recovery_instances.ids)}"
+  count = "${length(data.aws_instances.auto_recovery_instances.ids)}"
 
-  instance_id = "${data.aws.auto_recovery_instances.ids[count.index]}"
+  instance_id = "${data.aws_instances.auto_recovery_instances.ids[count.index]}"
 }
 
 resource "aws_cloudwatch_metric_alarm" "status_check_failed_instance_alarm_reboot" {
-  count = "${length(data.aws.auto_recovery_instance.*.id)}"
+  count = "${length(data.aws_instance.auto_recovery_instance.*.id)}"
 
   alarm_actions       = ["arn:aws:swf:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:action/actions/AWS_EC2.InstanceId/Reboot/1.0"]
   alarm_description   = "Status checks have failed, rebooting system"
-  alarm_name          = "${data.aws.auto_recovery_instance.*.tags.Name[count.index]} - StatusCheckFailedInstanceAlarmReboot"
+  alarm_name          = "${data.aws_instance.auto_recovery_instance.*.tags.Name[count.index]} - StatusCheckFailedInstanceAlarmReboot"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "${var.failed_instance_checks_before_reboot}"
   metric_name         = "StatusCheckFailed_Instance"
@@ -52,16 +52,16 @@ resource "aws_cloudwatch_metric_alarm" "status_check_failed_instance_alarm_reboo
   unit                = "Count"
 
   dimensions {
-    InstanceId = "${data.aws.auto_recovery_instance.*.id[count.index]}"
+    InstanceId = "${data.aws_instance.auto_recovery_instance.*.id[count.index]}"
   }
 }
 
 resource "aws_cloudwatch_metric_alarm" "status_check_failed_instance_alarm_ticket" {
-  count = "${length(data.aws.auto_recovery_instance.*.id)}"
+  count = "${length(data.aws_instance.auto_recovery_instance.*.id)}"
 
   alarm_actions       = ["arn:aws:sns:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rackspace-support-emergency"]
   alarm_description   = "Status checks have failed, generating ticket."
-  alarm_name          = "${data.aws.auto_recovery_instance.*.tags.Name[count.index]} - StatusCheckFailedInstanceAlarmReboot"
+  alarm_name          = "${data.aws_instance.auto_recovery_instance.*.tags.Name[count.index]} - StatusCheckFailedInstanceAlarmReboot"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "${var.failed_instance_checks_before_ticket_raised}"
   metric_name         = "StatusCheckFailed_Instance"
@@ -73,16 +73,16 @@ resource "aws_cloudwatch_metric_alarm" "status_check_failed_instance_alarm_ticke
   unit                = "Count"
 
   dimensions {
-    InstanceId = "${data.aws.auto_recovery_instance.*.id[count.index]}"
+    InstanceId = "${data.aws_instance.auto_recovery_instance.*.id[count.index]}"
   }
 }
 
 resource "aws_cloudwatch_metric_alarm" "status_check_failed_system_alarm_recover" {
-  count = "${length(data.aws.auto_recovery_instance.*.id)}"
+  count = "${length(data.aws_instance.auto_recovery_instance.*.id)}"
 
   alarm_actions       = ["arn:aws:automate:${data.aws_region.current.name}:ec2:recover"]
   alarm_description   = "Status checks have failed for system, recovering instance"
-  alarm_name          = "${data.aws.auto_recovery_instance.*.tags.Name[count.index]} - StatusCheckFailedSystemAlarmRecover"
+  alarm_name          = "${data.aws_instance.auto_recovery_instance.*.tags.Name[count.index]} - StatusCheckFailedSystemAlarmRecover"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "${var.failed_system_checks_before_reboot}"
   metric_name         = "StatusCheckFailed_System"
@@ -93,16 +93,16 @@ resource "aws_cloudwatch_metric_alarm" "status_check_failed_system_alarm_recover
   unit                = "Count"
 
   dimensions {
-    InstanceId = "${data.aws.auto_recovery_instance.*.id[count.index]}"
+    InstanceId = "${data.aws_instance.auto_recovery_instance.*.id[count.index]}"
   }
 }
 
 resource "aws_cloudwatch_metric_alarm" "status_check_failed_system_alarm_ticket" {
-  count = "${length(data.aws.auto_recovery_instance.*.id)}"
+  count = "${length(data.aws_instance.auto_recovery_instance.*.id)}"
 
   alarm_actions       = ["arn:aws:sns:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rackspace-support-emergency"]
   alarm_description   = "Status checks have failed for system, recovering instance"
-  alarm_name          = "${data.aws.auto_recovery_instance.*.tags.Name[count.index]} - StatusCheckFailedSystemAlarmRecover"
+  alarm_name          = "${data.aws_instance.auto_recovery_instance.*.tags.Name[count.index]} - StatusCheckFailedSystemAlarmRecover"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "${var.failed_system_checks_before_ticket_raised}"
   metric_name         = "StatusCheckFailed_System"
@@ -114,6 +114,6 @@ resource "aws_cloudwatch_metric_alarm" "status_check_failed_system_alarm_ticket"
   unit                = "Count"
 
   dimensions {
-    InstanceId = "${data.aws.auto_recovery_instance.*.id[count.index]}"
+    InstanceId = "${data.aws_instance.auto_recovery_instance.*.id[count.index]}"
   }
 }
