@@ -1,3 +1,7 @@
+locals {
+  instance_ids = "${compact(var.instances_ids)}"
+}
+
 data "aws_caller_identity" "current" {}
 
 data "aws_region" "current" {}
@@ -22,7 +26,7 @@ data "aws_instances" "auto_recovery_instances" {
 
   filter {
     name   = "instance-id"
-    values = ["${var.instance_ids}"]
+    values = ["${local.instance_ids}"]
   }
 
   instance_tags {
