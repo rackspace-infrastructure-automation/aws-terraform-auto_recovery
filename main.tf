@@ -1,5 +1,5 @@
 locals {
-  instance_ids = "${compact(var.instances_ids)}"
+  instance_ids = "${compact(var.instance_ids)}"
 }
 
 data "aws_caller_identity" "current" {}
