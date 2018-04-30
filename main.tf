@@ -65,7 +65,7 @@ resource "aws_cloudwatch_metric_alarm" "status_check_failed_instance_alarm_ticke
 
   alarm_actions       = ["arn:aws:sns:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rackspace-support-emergency"]
   alarm_description   = "Status checks have failed, generating ticket."
-  alarm_name          = "${data.aws_instance.auto_recovery_instance.*.tags.Name[count.index]} - StatusCheckFailedInstanceAlarmReboot"
+  alarm_name          = "${data.aws_instance.auto_recovery_instance.*.tags.Name[count.index]} - StatusCheckFailedInstanceAlarmTicket"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "${var.failed_instance_checks_before_ticket_raised}"
   metric_name         = "StatusCheckFailed_Instance"
@@ -106,7 +106,7 @@ resource "aws_cloudwatch_metric_alarm" "status_check_failed_system_alarm_ticket"
 
   alarm_actions       = ["arn:aws:sns:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rackspace-support-emergency"]
   alarm_description   = "Status checks have failed for system, recovering instance"
-  alarm_name          = "${data.aws_instance.auto_recovery_instance.*.tags.Name[count.index]} - StatusCheckFailedSystemAlarmRecover"
+  alarm_name          = "${data.aws_instance.auto_recovery_instance.*.tags.Name[count.index]} - StatusCheckFailedSystemAlarmTicket"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "${var.failed_system_checks_before_ticket_raised}"
   metric_name         = "StatusCheckFailed_System"
