@@ -56,6 +56,7 @@ resource "aws_cloudwatch_metric_alarm" "status_check_failed_instance_alarm_reboo
   period              = "${var.failed_instance_checks_period}"
   statistic           = "Minimum"
   threshold           = "0"
+  datapoints_to_alarm = "1"
   unit                = "Count"
 
   dimensions {
@@ -77,6 +78,7 @@ resource "aws_cloudwatch_metric_alarm" "status_check_failed_instance_alarm_ticke
   period              = "${var.failed_instance_checks_period}"
   statistic           = "Minimum"
   threshold           = "0"
+  datapoints_to_alarm = "1"
   unit                = "Count"
 
   dimensions {
@@ -97,6 +99,7 @@ resource "aws_cloudwatch_metric_alarm" "status_check_failed_system_alarm_recover
   period              = "${var.failed_system_checks_period}"
   statistic           = "Minimum"
   threshold           = "0"
+  datapoints_to_alarm = "1"
   unit                = "Count"
 
   dimensions {
@@ -118,6 +121,7 @@ resource "aws_cloudwatch_metric_alarm" "status_check_failed_system_alarm_ticket"
   period              = "${var.failed_system_checks_period}"
   statistic           = "Minimum"
   threshold           = "0"
+  datapoints_to_alarm = "1"
   unit                = "Count"
 
   dimensions {
