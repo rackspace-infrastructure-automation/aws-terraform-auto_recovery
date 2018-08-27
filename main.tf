@@ -19,8 +19,11 @@ data "aws_instances" "auto_recovery_instances" {
       "m5.*",
       "r3.*",
       "r4.*",
+      "r5.*",
       "t2.*",
+      "t3.*",
       "x1.*",
+      "x1e.*",
     ]
   }
 
