@@ -46,7 +46,7 @@ data "aws_instance" "auto_recovery_instance" {
 resource "aws_cloudwatch_metric_alarm" "status_check_failed_instance_alarm_reboot" {
   count = "${length(data.aws_instance.auto_recovery_instance.*.id)}"
 
-  alarm_actions       = ["arn:aws:swf:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:action/actions/AWS_EC2.InstanceId/Reboot/1.0"]
+  alarm_actions       = ["arn:aws:swf:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:action/actions/AWS_EC2.InstanceId.Reboot/1.0"]
   alarm_description   = "Status checks have failed, rebooting system"
   alarm_name          = "${data.aws_instance.auto_recovery_instance.*.tags.Name[count.index]} - StatusCheckFailedInstanceAlarmReboot"
   comparison_operator = "GreaterThanThreshold"
