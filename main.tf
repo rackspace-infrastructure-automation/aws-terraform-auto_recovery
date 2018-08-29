@@ -56,7 +56,7 @@ resource "aws_cloudwatch_metric_alarm" "status_check_failed_instance_alarm_reboo
   period              = "${var.failed_instance_checks_period}"
   statistic           = "Minimum"
   threshold           = "0"
-  datapoints_to_alarm = "5"
+  datapoints_to_alarm = "${ var.failed_instance_checks_before_reboot < 5 ? var.failed_instance_checks_before_reboot : 5}"
   unit                = "Count"
 
   dimensions {
@@ -78,7 +78,7 @@ resource "aws_cloudwatch_metric_alarm" "status_check_failed_instance_alarm_ticke
   period              = "${var.failed_instance_checks_period}"
   statistic           = "Minimum"
   threshold           = "0"
-  datapoints_to_alarm = "5"
+  datapoints_to_alarm = "${ var.failed_instance_checks_before_ticket_raised < 5 ? var.failed_instance_checks_before_ticket_raised : 5}"
   unit                = "Count"
 
   dimensions {
@@ -99,7 +99,7 @@ resource "aws_cloudwatch_metric_alarm" "status_check_failed_system_alarm_recover
   period              = "${var.failed_system_checks_period}"
   statistic           = "Minimum"
   threshold           = "0"
-  datapoints_to_alarm = "5"
+  datapoints_to_alarm = "${ var.failed_system_checks_before_reboot < 5 ? var.failed_system_checks_before_reboot : 5}"
   unit                = "Count"
 
   dimensions {
@@ -121,7 +121,7 @@ resource "aws_cloudwatch_metric_alarm" "status_check_failed_system_alarm_ticket"
   period              = "${var.failed_system_checks_period}"
   statistic           = "Minimum"
   threshold           = "0"
-  datapoints_to_alarm = "5"
+  datapoints_to_alarm = "${ var.failed_system_checks_before_ticket_raised < 5 ? var.failed_system_checks_before_ticket_raised : 5}"
   unit                = "Count"
 
   dimensions {
